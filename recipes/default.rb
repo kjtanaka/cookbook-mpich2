@@ -17,11 +17,6 @@
 # limitations under the License.
 #
 
-node.set['mpich2']['download_url'] = "http://www.mpich.org/static/downloads/3.1/mpich-3.1.tar.gz"
-node.set['mpich2']['version'] = "3.1"
-node.set['mpich2']['source_dir'] = "/root/source"
-node.set['mpich2']['install_dir'] = "/opt"
-
 mpich2_download_url = node['mpich2']['download_url']
 mpich2_source_dir = node['mpich2']['source_dir']
 mpich2_install_dir = node['mpich2']['install_dir']
