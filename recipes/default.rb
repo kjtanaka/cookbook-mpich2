@@ -73,40 +73,40 @@ when "redhat", "centos"
                 valgrind
                 compat-gcc-34-g77]
 when "ubuntu", "debian"
-	  packages = %w[build-essential]
+  packages = %w[build-essential]
 end
 
 packages.each do |pkg|
-	package pkg do
-		action :install
-	end
+  package pkg do
+    action :install
+  end
 end
 
 directory mpich2_source_dir do
-	action :create
+  action :create
 end
 
 remote_file "#{mpich2_source_dir}/mpich-#{mpich2_version}.tar.gz" do
-	source mpich2_download_url
-	mode 00644
-	owner "root"
-	group "root"
-	action :create_if_missing
+  source mpich2_download_url
+  mode 00644
+  owner "root"
+  group "root"
+  action :create_if_missing
 end
 
 execute "untar_mpich2_tarball" do
-	command "tar zxvf mpich-#{mpich2_version}.tar.gz"
-	cwd mpich2_source_dir
-	creates "#{mpich2_source_dir}/mpich-#{mpich2_version}"
+  command "tar zxvf mpich-#{mpich2_version}.tar.gz"
+  cwd mpich2_source_dir
+  creates "#{mpich2_source_dir}/mpich-#{mpich2_version}"
 end
 
 script "install_mpich2" do
-	interpreter "bash"
-	cwd "#{mpich2_source_dir}/mpich-#{mpich2_version}"
-	code <<-EOH
-	./configure --prefix=#{mpich2_install_dir}/mpich-#{mpich2_version}
-	make
-	make intall
-	EOH
-	creates "#{mpich2_install_dir}/mpich-#{mpich2_version}"
+  interpreter "bash"
+  cwd "#{mpich2_source_dir}/mpich-#{mpich2_version}"
+  code <<-EOH
+  ./configure --prefix=#{mpich2_install_dir}/mpich-#{mpich2_version}
+  make
+  make intall
+  EOH
+  creates "#{mpich2_install_dir}/mpich-#{mpich2_version}"
 end
