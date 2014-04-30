@@ -1,6 +1,7 @@
 #
 # Cookbook Name:: mpich2
 # Recipe:: default
+# Author:: Koji Tanaka (<kj.tanaka@gmail.com>)
 #
 # Copyright 2014, FutureGrid, Indiana University
 #
