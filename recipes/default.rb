@@ -97,11 +97,14 @@ end
 
 script "install_mpich2" do
   interpreter "bash"
+	user "root"
   cwd "#{mpich2_source_dir}/mpich-#{mpich2_version}"
   code <<-EOH
-  ./configure --prefix=#{mpich2_install_dir}/mpich-#{mpich2_version}
+  ./configure --prefix=#{mpich2_install_dir}/mpich-#{mpich2_version} --disable-gl
+	sleep 3
   make
-  make intall
+	sleep 3
+  make install
   EOH
   creates "#{mpich2_install_dir}/mpich-#{mpich2_version}"
 end
