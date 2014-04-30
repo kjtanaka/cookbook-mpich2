@@ -40,3 +40,14 @@ template "#{mpich2_modulefile_dir}/#{mpich2_version}" do
     :mpich2_install_dir => mpich2_install_dir
   )
 end
+
+template "#{mpich2_modulefile_dir}/.version" do
+  source "dot.version.erb"
+  owner "root"
+  group "root"
+  mode 00644
+  action :create
+  variables(
+    :mpich2_version => mpich2_version
+  )
+end
