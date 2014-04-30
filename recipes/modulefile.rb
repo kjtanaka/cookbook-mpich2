@@ -16,4 +16,7 @@ template "#{mpich2_modulefile_dir}/#{mpich2_version}" do
   group "root"
   mode 00644
 	action :create
+  variables(
+    :mpich2_install_dir => mpich2_install_dir
+	)
 end
