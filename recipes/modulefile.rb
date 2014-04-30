@@ -6,8 +6,8 @@ directory mpich2_modulefile_dir do
   owner "root"
   group "root"
   mode 00755
-	action :create
-	recursive true
+  action :create
+  recursive true
 end
 
 template "#{mpich2_modulefile_dir}/#{mpich2_version}" do
@@ -15,8 +15,8 @@ template "#{mpich2_modulefile_dir}/#{mpich2_version}" do
   owner "root"
   group "root"
   mode 00644
-	action :create
+  action :create
   variables(
     :mpich2_install_dir => mpich2_install_dir
-	)
+  )
 end
