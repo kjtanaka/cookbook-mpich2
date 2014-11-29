@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: mpich2
+# Cookbook Name:: opt-mpich2
 # Recipe:: default
 # Author:: Koji Tanaka (<kj.tanaka@gmail.com>)
 #
@@ -18,94 +18,53 @@
 # limitations under the License.
 #
 
-mpich2_download_url = node['mpich2']['download_url']
-mpich2_source_dir = node['mpich2']['source_dir']
-mpich2_install_dir = node['mpich2']['install_dir']
-mpich2_version = node['mpich2']['version']
+mpich2_download_url = node['opt-mpich2']['download_url']
+mpich2_download_dir = node['opt-mpich2']['download_dir']
+mpich2_install_dir = node['opt-mpich2']['install_dir']
+mpich2_version = node['opt-mpich2']['version']
 
 case node[:platform]
 when "redhat", "centos"
-  packages = %w[autoconf
-                automake
-                binutils
-                bison
-                flex
-                gcc
-                gcc-c++
-                gdb
-                gettext
-                libtool
-                make
-                pkgconfig
-                redhat-rpm-config
-                rpm-build
-                strace
-                automake14
-                automake15
-                automake16
-                automake17
-                byacc
-                cscope
-                ctags
-                cvs
-                dev86
-                diffstat
-                dogtail
-                doxygen
-                elfutils
-                gcc-gfortran
-                indent
-                ltrace
-                oprofile
-                patchutils
-                pstack
-                python-ldap
-                rcs
-                splint
-                subversion
-                swig
-                systemtap
-                texinfo
-                valgrind
-                compat-gcc-34-g77]
+  package "gcc-gfortran"
 when "ubuntu", "debian"
-  packages = %w[build-essential]
+  include_recipe 'apt'
 end
 
-packages.each do |pkg|
-  package pkg do
-    action :install
-  end
-end
+include_recipe 'build-essential'
 
-directory mpich2_source_dir do
+directory mpich2_download_dir do
   action :create
 end
 
-remote_file "#{mpich2_source_dir}/mpich-#{mpich2_version}.tar.gz" do
+directory mpich2_install_dir do
+  recursive true
+  action :create
+end
+
+remote_file "#{mpich2_download_dir}/mpich-#{mpich2_version}.tar.gz" do
   source mpich2_download_url
   mode 00644
   owner "root"
   group "root"
-  action :create_if_missing
+  not_if { ::File.exists?("#{mpich2_install_dir}/lib") }
 end
 
 execute "untar_mpich2_tarball" do
-  command "tar zxvf mpich-#{mpich2_version}.tar.gz"
-  cwd mpich2_source_dir
-  creates "#{mpich2_source_dir}/mpich-#{mpich2_version}"
+  command "tar zxf mpich-#{mpich2_version}.tar.gz"
+  cwd mpich2_download_dir
+  only_if { ::File.exists?("#{mpich2_download_dir}/mpich-#{mpich2_version}.tar.gz") }
+  creates "#{mpich2_download_dir}/mpich-#{mpich2_version}"
 end
 
 script "install_mpich2" do
   interpreter "bash"
 	user "root"
-  cwd "#{mpich2_source_dir}/mpich-#{mpich2_version}"
+  cwd "#{mpich2_download_dir}/mpich-#{mpich2_version}"
   code <<-EOH
-  ./configure --prefix=#{mpich2_install_dir}/mpich-#{mpich2_version} --disable-gl
-	sleep 3
+  ./configure --prefix=#{mpich2_install_dir} --disable-gl
   make
-	sleep 3
   make install
   EOH
-  creates "#{mpich2_install_dir}/mpich-#{mpich2_version}"
+  only_if { ::File.exists?("#{mpich2_download_dir}/mpich-#{mpich2_version}") }
+  creates "#{mpich2_install_dir}/lib"
 end
