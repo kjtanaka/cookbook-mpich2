@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: mpich2
+# Cookbook Name:: mpich
 # Recipe:: modulefile
 # Author:: Koji Tanaka (<kj.tanaka@gmail.com>)
 #
@@ -18,11 +18,11 @@
 # limitations under the License.
 #
 
-mpich2_install_dir = node['mpich2']['install_dir']
-mpich2_version = node['mpich2']['version']
-mpich2_modulefile_dir = node['mpich2']['modulefile_dir']
+mpich_install_dir = node['opt-mpich']['install_dir']
+mpich_version = node['opt-mpich']['version']
+mpich_modulefile_dir = node['opt-mpich']['modulefile_dir']
 
-directory mpich2_modulefile_dir do
+directory mpich_modulefile_dir do
   owner "root"
   group "root"
   mode 00755
@@ -30,24 +30,24 @@ directory mpich2_modulefile_dir do
   recursive true
 end
 
-template "#{mpich2_modulefile_dir}/#{mpich2_version}" do
+template "#{mpich_modulefile_dir}/#{mpich_version}" do
   source "modulefile.erb"
   owner "root"
   group "root"
   mode 00644
   action :create
   variables(
-    :mpich2_install_dir => mpich2_install_dir
+    :mpich_install_dir => mpich_install_dir
   )
 end
 
-template "#{mpich2_modulefile_dir}/.version" do
+template "#{mpich_modulefile_dir}/.version" do
   source "dot.version.erb"
   owner "root"
   group "root"
   mode 00644
   action :create
   variables(
-    :mpich2_version => mpich2_version
+    :mpich_version => mpich_version
   )
 end

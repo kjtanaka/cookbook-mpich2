@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: opt-mpich2
+# Cookbook Name:: opt-mpich
 # Recipe:: default
 # Author:: Koji Tanaka (<kj.tanaka@gmail.com>)
 #
@@ -18,10 +18,10 @@
 # limitations under the License.
 #
 
-mpich2_download_url = node['opt-mpich2']['download_url']
-mpich2_download_dir = node['opt-mpich2']['download_dir']
-mpich2_install_dir = node['opt-mpich2']['install_dir']
-mpich2_version = node['opt-mpich2']['version']
+mpich_download_url = node['opt-mpich']['download_url']
+mpich_download_dir = node['opt-mpich']['download_dir']
+mpich_install_dir = node['opt-mpich']['install_dir']
+mpich_version = node['opt-mpich']['version']
 
 case node[:platform]
 when "redhat", "centos"
@@ -32,39 +32,39 @@ end
 
 include_recipe 'build-essential'
 
-directory mpich2_download_dir do
+directory mpich_download_dir do
   action :create
 end
 
-directory mpich2_install_dir do
+directory mpich_install_dir do
   recursive true
   action :create
 end
 
-remote_file "#{mpich2_download_dir}/mpich-#{mpich2_version}.tar.gz" do
-  source mpich2_download_url
+remote_file "#{mpich_download_dir}/mpich-#{mpich_version}.tar.gz" do
+  source mpich_download_url
   mode 00644
   owner "root"
   group "root"
-  not_if { ::File.exists?("#{mpich2_install_dir}/lib") }
+  not_if { ::File.exists?("#{mpich_install_dir}/lib") }
 end
 
-execute "untar_mpich2_tarball" do
-  command "tar zxf mpich-#{mpich2_version}.tar.gz"
-  cwd mpich2_download_dir
-  only_if { ::File.exists?("#{mpich2_download_dir}/mpich-#{mpich2_version}.tar.gz") }
-  creates "#{mpich2_download_dir}/mpich-#{mpich2_version}"
+execute "untar_mpich_tarball" do
+  command "tar zxf mpich-#{mpich_version}.tar.gz"
+  cwd mpich_download_dir
+  only_if { ::File.exists?("#{mpich_download_dir}/mpich-#{mpich_version}.tar.gz") }
+  creates "#{mpich_download_dir}/mpich-#{mpich_version}"
 end
 
-script "install_mpich2" do
+script "install_mpich" do
   interpreter "bash"
 	user "root"
-  cwd "#{mpich2_download_dir}/mpich-#{mpich2_version}"
+  cwd "#{mpich_download_dir}/mpich-#{mpich_version}"
   code <<-EOH
-  ./configure --prefix=#{mpich2_install_dir} --disable-gl
+  ./configure --prefix=#{mpich_install_dir} --disable-gl
   make
   make install
   EOH
-  only_if { ::File.exists?("#{mpich2_download_dir}/mpich-#{mpich2_version}") }
-  creates "#{mpich2_install_dir}/lib"
+  only_if { ::File.exists?("#{mpich_download_dir}/mpich-#{mpich_version}") }
+  creates "#{mpich_install_dir}/lib"
 end
